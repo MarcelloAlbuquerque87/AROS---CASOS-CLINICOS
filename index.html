@@ -32,7 +32,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 /* NAV */
 nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:0;height:52px;position:sticky;top:0;z-index:40}
 .nav-brand{font-weight:600;font-size:15px;margin-right:28px;letter-spacing:-.02em}
-.nav-brand span{color:var(--text-3);font-weight:400}
+.nav-brand span{color:var(--text);font-weight:600}
 .tab-btn{height:52px;padding:0 16px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:-1px;transition:color .15s,border-color .15s}
 .tab-btn:hover{color:var(--text)}
 .tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
@@ -47,11 +47,11 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 
 /* BOARD */
 .board-wrap{overflow-x:auto;padding-bottom:8px}
-.board{display:flex;gap:12px;align-items:flex-start;min-width:max-content;padding-bottom:4px}
-.column{width:200px;display:flex;flex-direction:column;gap:6px}
+.board{display:flex;gap:12px;align-items:flex-start;padding-bottom:4px;width:100%}
+.column{flex:1 1 0;min-width:160px;display:flex;flex-direction:column;gap:6px}
 .col-header{padding:8px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
 .col-count{font-size:11px;font-weight:500;padding:1px 7px;border-radius:99px;opacity:.75}
-.col-body{border:1px solid var(--border);border-radius:var(--radius);padding:8px;min-height:400px;transition:background .12s,border-color .12s}
+.col-body{border:1px solid var(--border);border-radius:var(--radius);padding:8px;min-height:calc(100vh - 140px);transition:background .12s,border-color .12s}
 .col-body.drag-over{background:rgba(0,0,0,.03);border-color:var(--text-3);border-style:dashed}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;cursor:grab;margin-bottom:6px;box-shadow:var(--shadow);transition:border-color .12s,box-shadow .12s}
 .card:last-of-type{margin-bottom:0}
