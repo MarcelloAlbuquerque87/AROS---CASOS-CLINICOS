@@ -53,22 +53,24 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .col-count{font-size:11px;font-weight:500;padding:1px 7px;border-radius:99px;opacity:.75}
 .col-body{border:1px solid var(--border);border-radius:var(--radius);padding:8px;min-height:calc(100vh - 140px);transition:background .12s,border-color .12s}
 .col-body.drag-over{background:rgba(0,0,0,.03);border-color:var(--text-3);border-style:dashed}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;cursor:grab;margin-bottom:6px;box-shadow:var(--shadow);transition:border-color .12s,box-shadow .12s}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;cursor:pointer;margin-bottom:6px;box-shadow:var(--shadow);transition:border-color .12s,box-shadow .12s}
 .card:last-of-type{margin-bottom:0}
 .card:hover{border-color:var(--text-3);box-shadow:var(--shadow-md)}
-.card:active{cursor:grabbing}
+.card[draggable]:active{cursor:grabbing}
 .card.dragging{opacity:.3;transform:rotate(1deg)}
 .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:5px}
 .card-id{font-family:'DM Mono',monospace;font-size:11.5px;font-weight:500;color:var(--text);line-height:1.3;flex:1;word-break:break-all}
-.card-edit{background:none;border:none;cursor:pointer;color:var(--text-3);padding:0;line-height:1;flex-shrink:0;transition:color .12s}
+.card-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.card-edit{background:none;border:none;cursor:pointer;color:var(--text-3);padding:0;line-height:1;transition:color .12s}
 .card-edit:hover{color:var(--text)}
 .card-pill{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:99px;margin-bottom:4px}
 .card-sub{font-size:11px;color:var(--text-2);margin-bottom:2px}
 .card-preview{font-size:11px;color:var(--text-3);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.card-claim-hint{font-size:10px;color:var(--c-producao-ac);margin-top:5px;font-weight:500;opacity:.8}
 .add-btn{width:100%;padding:8px;border-radius:var(--radius-sm);border:1px dashed var(--border);background:transparent;color:var(--text-3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;margin-top:6px}
 .add-btn:hover{border-color:var(--text-3);color:var(--text-2);background:rgba(0,0,0,.02)}
 
-/* MODAL */
+/* MODAL (edit) */
 .overlay{display:none;position:fixed;inset:0;background:rgba(20,18,14,.45);z-index:100;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto}
 .overlay.open{display:flex}
 .modal{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow-md);padding:24px;width:100%;max-width:580px;margin:auto}
@@ -100,6 +102,36 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .btn-primary:hover{opacity:.88}
 .btn-primary:disabled{opacity:.4;cursor:not-allowed}
 
+/* VIEW MODAL */
+.view-modal{max-width:660px}
+.view-header-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.view-status-pill{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px}
+.view-meta-txt{font-size:11px;color:var(--text-3)}
+.assume-bar{background:var(--c-producao-bg);border:1px solid rgba(24,95,165,.18);border-radius:var(--radius-sm);padding:12px 14px;display:flex;gap:8px;align-items:center;margin-bottom:18px}
+.assume-bar p{font-size:12px;color:var(--c-producao-tx);font-weight:500;white-space:nowrap;margin-right:4px}
+.assume-bar input{flex:1;padding:7px 10px;border:1px solid rgba(24,95,165,.25);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;min-width:0}
+.assume-bar input:focus{border-color:var(--c-producao-ac)}
+.btn-assume{padding:7px 16px;background:var(--c-producao-ac);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity .12s}
+.btn-assume:hover{opacity:.88}
+.view-body{max-height:55vh;overflow-y:auto;padding-right:2px}
+.view-section{margin-bottom:22px}
+.view-section:last-child{margin-bottom:0}
+.view-section-title{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.view-section-title::after{content:'';flex:1;height:1px;background:var(--border-soft)}
+.view-text{font-size:13px;color:var(--text);line-height:1.75;white-space:pre-wrap;word-break:break-word}
+.view-imgs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.view-img{width:80px;height:80px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);cursor:zoom-in;flex-shrink:0;transition:border-color .12s}
+.view-img:hover{border-color:var(--text-3)}
+.view-img img{width:100%;height:100%;object-fit:cover;display:block}
+.view-empty{text-align:center;padding:32px 0;color:var(--text-3);font-size:13px}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;align-items:center;justify-content:center;cursor:zoom-out}
+.lightbox.open{display:flex}
+.lightbox img{max-width:92vw;max-height:92vh;border-radius:var(--radius-sm);object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.5)}
+.lightbox-close{position:fixed;top:16px;right:20px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;line-height:1;opacity:.7;transition:opacity .12s}
+.lightbox-close:hover{opacity:1}
+
 /* PROD */
 .prod-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .prod-top h2{font-size:15px;font-weight:600;letter-spacing:-.02em}
@@ -125,14 +157,6 @@ tbody tr:hover td{background:#FAFAF8}
 .pill-id{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:99px;background:#E8F0FA;color:#0C447C;margin:1px}
 .empty{text-align:center;padding:56px 0;color:var(--text-3);font-size:13px;line-height:1.7}
 .loading{text-align:center;padding:40px;color:var(--text-3);font-size:13px}
-
-/* CONFIG */
-.config-box{max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:0 auto}
-.config-box h3{font-size:15px;font-weight:600;margin-bottom:6px}
-.config-box p{font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:20px}
-.config-box input{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font-size:13px;font-family:'DM Mono',monospace;outline:none;margin-bottom:10px;color:var(--text)}
-.config-box input:focus{border-color:var(--text-3)}
-.config-err{font-size:12px;color:#c0392b;margin-top:6px;display:none}
 </style>
 </head>
 <body>
@@ -170,7 +194,7 @@ tbody tr:hover td{background:#FAFAF8}
   <div class="table-wrap" id="prod-table"></div>
 </div>
 
-<!-- MODAL -->
+<!-- EDIT MODAL -->
 <div class="overlay" id="overlay">
   <div class="modal">
     <div class="modal-head">
@@ -248,14 +272,49 @@ tbody tr:hover td{background:#FAFAF8}
   </div>
 </div>
 
+<!-- VIEW MODAL -->
+<div class="overlay" id="view-overlay">
+  <div class="modal view-modal">
+    <div class="modal-head">
+      <div style="min-width:0">
+        <div id="view-case-id" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-3);margin-bottom:3px"></div>
+        <h3 id="view-title" style="font-size:16px;letter-spacing:-.02em;line-height:1.3"></h3>
+      </div>
+      <button class="modal-close" onclick="closeView()">×</button>
+    </div>
+
+    <div class="view-header-meta" id="view-header-meta"></div>
+
+    <!-- Assume bar: shown only for Remember cards -->
+    <div class="assume-bar" id="view-assume-bar" style="display:none">
+      <p>Assumir caso:</p>
+      <input id="view-assume-name" placeholder="Seu nome..." onkeydown="if(event.key==='Enter')assumeCard()"/>
+      <button class="btn-assume" onclick="assumeCard()">Assumir →</button>
+    </div>
+
+    <div class="view-body" id="view-body"></div>
+
+    <div class="modal-foot">
+      <button class="btn-danger" id="view-btn-release" onclick="releaseCard()" style="display:none">Liberar caso</button>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="closeView()">Fechar</button>
+        <button class="btn btn-primary" onclick="openEditFromView()">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">×</button>
+  <img id="lightbox-img" src="" alt=""/>
+</div>
+
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// =============================================
-// 🔧 COLE AQUI SUA CONFIGURAÇÃO DO FIREBASE
-// =============================================
 const firebaseConfig = {
   apiKey: "AIzaSyB5PEhvKWn6nv_WHJD48ciyVwzcQA0ACW0",
   authDomain: "aros---casos-clinicos.firebaseapp.com",
@@ -265,7 +324,6 @@ const firebaseConfig = {
   messagingSenderId: "708068865286",
   appId: "1:708068865286:web:9027da2f28a3454c599a87"
 };
-// =============================================
 
 const COLS = [
   {id:'remember', label:'Remember',   bg:'var(--c-remember-bg)', tx:'var(--c-remember-tx)', ac:'var(--c-remember-ac)'},
@@ -278,18 +336,21 @@ const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov
 
 let cards = {};
 let editingId = null;
+let viewingId = null;
 let dragging = null;
 let tmpImgs = {enunciado:[],p1:[],p2:[],p3:[]};
 let prodYear = new Date().getFullYear();
 let db, dbRef;
 
-// STATUS
 function setStatus(ok, txt){
   document.getElementById('status-dot').className = 'status-dot ' + (ok ? 'ok' : 'err');
   document.getElementById('status-txt').textContent = txt;
 }
 
-// INIT FIREBASE
+function esc(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 try {
   const app = initializeApp(firebaseConfig);
   db = getDatabase(app);
@@ -300,13 +361,17 @@ try {
     cards = snap.val() || {};
     render();
     renderProd();
+    // Refresh view modal if open so it reflects latest data
+    if (viewingId && document.getElementById('view-overlay').classList.contains('open')) {
+      openView(viewingId);
+    }
   }, err => {
     setStatus(false, 'Erro de conexão');
     console.error(err);
   });
 } catch(e) {
   setStatus(false, 'Firebase não configurado');
-  document.getElementById('board').innerHTML = `<div class="loading" style="color:#c0392b">⚠️ Configure o Firebase no arquivo index.html.<br><small style="color:var(--text-3)">Siga o passo a passo do README.md</small></div>`;
+  document.getElementById('board').innerHTML = `<div class="loading" style="color:#c0392b">⚠️ Configure o Firebase no arquivo index.html.</div>`;
 }
 
 // TABS
@@ -325,7 +390,6 @@ function render(){
   board.innerHTML = '';
   const cardArr = Object.values(cards);
 
-  // populate group select
   const sel = document.getElementById('f-col');
   sel.innerHTML = '';
   COLS.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.label;sel.appendChild(o);});
@@ -363,19 +427,35 @@ function render(){
       el.className = 'card';
       el.draggable = true;
       const title = card.id || card.tema || card.prof || '(sem título)';
-      const sub = card.id && card.tema ? card.tema : card.id && card.prof ? '' : card.tema && card.prof ? card.prof : '';
+      const isRemember = card.col === 'remember';
+
       el.innerHTML = `
         <div class="card-top">
-          <span class="card-id">${title}</span>
-          <button class="card-edit" title="Editar" onclick="openEdit('${card._uid}')">
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
-          </button>
+          <span class="card-id">${esc(title)}</span>
+          <div class="card-actions">
+            <button class="card-edit" title="Editar" data-uid="${card._uid}">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
         </div>
-        ${card.tema?`<span class="card-pill" style="background:${col.bg};color:${col.tx}">${card.tema}</span>`:''}
-        ${card.prof?`<div class="card-sub">👤 ${card.prof}</div>`:''}
-        ${card.enunciado?`<div class="card-preview">${card.enunciado}</div>`:''}`;
+        ${card.tema?`<span class="card-pill" style="background:${col.bg};color:${col.tx}">${esc(card.tema)}</span>`:''}
+        ${card.prof?`<div class="card-sub">👤 ${esc(card.prof)}</div>`:''}
+        ${card.enunciado?`<div class="card-preview">${esc(card.enunciado)}</div>`:''}
+        ${isRemember?`<div class="card-claim-hint">Clique para assumir →</div>`:''}`;
+
       el.addEventListener('dragstart', ()=>{dragging=card._uid;el.classList.add('dragging')});
       el.addEventListener('dragend', ()=>{dragging=null;el.classList.remove('dragging')});
+
+      el.addEventListener('click', e => {
+        if (e.target.closest('.card-edit')) return;
+        openView(card._uid);
+      });
+
+      el.querySelector('.card-edit').addEventListener('click', e => {
+        e.stopPropagation();
+        openEdit(card._uid);
+      });
+
       body.appendChild(el);
     });
 
@@ -389,6 +469,135 @@ function render(){
     board.appendChild(colEl);
   });
 }
+
+// VIEW MODAL
+function buildViewImgs(imgs) {
+  if (!imgs || !imgs.length) return '';
+  const thumbs = imgs.map(src =>
+    `<div class="view-img"><img src="${src}" loading="lazy"/></div>`
+  ).join('');
+  return `<div class="view-imgs">${thumbs}</div>`;
+}
+
+window.openView = function(uid) {
+  const card = cards[uid];
+  if (!card) return;
+  viewingId = uid;
+
+  const col = COLS.find(c => c.id === card.col) || COLS[0];
+
+  // Header
+  document.getElementById('view-case-id').textContent = card.id || '';
+  document.getElementById('view-title').textContent = card.tema || card.id || '(sem título)';
+
+  // Meta bar
+  const dateCriado = card.createdAt ? new Date(card.createdAt).toLocaleDateString('pt-BR') : '';
+  const datePeer   = card.peerDate  ? new Date(card.peerDate).toLocaleDateString('pt-BR')  : '';
+  let metaParts = [];
+  if (card.prof) metaParts.push(`👤 ${esc(card.prof)}`);
+  if (dateCriado) metaParts.push(`Criado em ${dateCriado}`);
+  if (datePeer)   metaParts.push(`Peer-review em ${datePeer}`);
+  document.getElementById('view-header-meta').innerHTML = `
+    <span class="view-status-pill" style="background:${col.bg};color:${col.tx}">${col.label}</span>
+    ${metaParts.length ? `<span class="view-meta-txt">${metaParts.join(' · ')}</span>` : ''}`;
+
+  // Assume bar (only for Remember)
+  const assumeBar = document.getElementById('view-assume-bar');
+  if (card.col === 'remember') {
+    assumeBar.style.display = 'flex';
+    document.getElementById('view-assume-name').value = '';
+  } else {
+    assumeBar.style.display = 'none';
+  }
+
+  // Release button (only for Em produção with a professor)
+  const releaseBtn = document.getElementById('view-btn-release');
+  releaseBtn.style.display = (card.col === 'producao' && card.prof) ? 'block' : 'none';
+
+  // Body
+  const body = document.getElementById('view-body');
+  let html = '';
+
+  if (card.enunciado) {
+    html += `<div class="view-section">
+      <div class="view-section-title">Enunciado</div>
+      <div class="view-text">${esc(card.enunciado)}</div>
+      ${buildViewImgs(card.imgs?.enunciado)}
+    </div>`;
+  }
+
+  ['p1','p2','p3'].forEach((k, i) => {
+    if (card[k]) {
+      html += `<div class="view-section">
+        <div class="view-section-title">Pergunta ${i+1}</div>
+        <div class="view-text">${esc(card[k])}</div>
+        ${buildViewImgs(card.imgs?.[k])}
+      </div>`;
+    }
+  });
+
+  if (card.obs) {
+    html += `<div class="view-section">
+      <div class="view-section-title">Observações</div>
+      <div class="view-text">${esc(card.obs)}</div>
+    </div>`;
+  }
+
+  if (!html) html = '<div class="view-empty">Nenhum conteúdo preenchido ainda.</div>';
+  body.innerHTML = html;
+
+  // Lightbox delegation
+  body.querySelectorAll('.view-img').forEach(thumb => {
+    thumb.onclick = () => openLightbox(thumb.querySelector('img').src);
+  });
+
+  document.getElementById('view-overlay').classList.add('open');
+  if (card.col === 'remember') {
+    setTimeout(() => document.getElementById('view-assume-name').focus(), 60);
+  }
+};
+
+window.closeView = function() {
+  document.getElementById('view-overlay').classList.remove('open');
+};
+
+window.openEditFromView = function() {
+  closeView();
+  openEdit(viewingId);
+};
+
+window.assumeCard = function() {
+  const name = document.getElementById('view-assume-name').value.trim();
+  if (!name) { document.getElementById('view-assume-name').focus(); return; }
+  if (!viewingId) return;
+  update(ref(db, 'casos/' + viewingId), { prof: name, col: 'producao' })
+    .then(() => closeView());
+};
+
+window.releaseCard = function() {
+  if (!viewingId) return;
+  const card = cards[viewingId];
+  if (!card) return;
+  if (!confirm(`Remover "${card.prof}" deste caso? O caso voltará para o quadro Remember.`)) return;
+  update(ref(db, 'casos/' + viewingId), { prof: '', col: 'remember' })
+    .then(() => closeView());
+};
+
+document.getElementById('view-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('view-overlay')) closeView();
+});
+
+// LIGHTBOX
+window.openLightbox = function(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+};
+window.closeLightbox = function() {
+  document.getElementById('lightbox').classList.remove('open');
+};
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target !== document.getElementById('lightbox-close')) closeLightbox();
+});
 
 // RENDER PRODUÇÃO
 function renderProd(){
@@ -404,7 +613,7 @@ function renderProd(){
   document.getElementById('metrics').innerHTML = `
     <div class="metric"><div class="metric-lbl">Produzidos em ${prodYear}</div><div class="metric-val">${thisYear.length}</div></div>
     <div class="metric"><div class="metric-lbl">Professores ativos</div><div class="metric-val">${profsYear.length}</div></div>
-    <div class="metric"><div class="metric-lbl">Maior produção</div><div class="metric-val">${topN||'—'}</div><div class="metric-sub">${topProf}</div></div>
+    <div class="metric"><div class="metric-lbl">Maior produção</div><div class="metric-val">${topN||'—'}</div><div class="metric-sub">${esc(topProf)}</div></div>
     <div class="metric"><div class="metric-lbl">Total acumulado</div><div class="metric-val">${produced.length}</div></div>`;
 
   const cont = document.getElementById('prod-table');
@@ -419,10 +628,10 @@ function renderProd(){
 
   allProfs.forEach(p=>{
     const rowTotal = thisYear.filter(c=>c.prof===p).length;
-    html += `<tr><td style="font-weight:500">${p}</td>`;
+    html += `<tr><td style="font-weight:500">${esc(p)}</td>`;
     showIdx.forEach(i=>{
       const mc = thisYear.filter(c=>c.prof===p&&new Date(c.peerDate).getMonth()===i);
-      html += `<td>${mc.length?`<div style="font-weight:600;margin-bottom:3px">${mc.length}</div><div>${mc.map(c=>`<span class="pill-id">${c.id||c.tema||'—'}</span>`).join('')}</div>`:'<span style="color:var(--text-3)">—</span>'}</td>`;
+      html += `<td>${mc.length?`<div style="font-weight:600;margin-bottom:3px">${mc.length}</div><div>${mc.map(c=>`<span class="pill-id">${esc(c.id||c.tema||'—')}</span>`).join('')}</div>`:'<span style="color:var(--text-3)">—</span>'}</td>`;
     });
     html += `<td style="font-weight:600;color:var(--c-producao-tx)">${rowTotal||'—'}</td></tr>`;
   });
@@ -433,7 +642,7 @@ function renderProd(){
   cont.innerHTML = html;
 }
 
-// MODAL
+// EDIT MODAL
 function clearImgs(){
   tmpImgs={enunciado:[],p1:[],p2:[],p3:[]};
   ['enunciado','p1','p2','p3'].forEach(k=>{const g=document.getElementById('imgs-'+k);if(g)g.innerHTML='';});
@@ -523,7 +732,7 @@ window.deleteCard = function(){
 };
 
 document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeView();closeLightbox();}});
 </script>
 </body>
 </html>
