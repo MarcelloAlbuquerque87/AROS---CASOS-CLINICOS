@@ -25,6 +25,12 @@
   --c-peer-bg:#FAF0E0;     --c-peer-tx:#633806;     --c-peer-ac:#BA7517;
   --c-revisado-bg:#EBF5E0; --c-revisado-tx:#27500A; --c-revisado-ac:#3B6D11;
   --c-publicado-bg:#EEEDFE;--c-publicado-tx:#3C3489;--c-publicado-ac:#533AB7;
+
+  --c-remember-hd:#3A3830;
+  --c-producao-hd:#0A3A6A;
+  --c-peer-hd:#7A4A08;
+  --c-revisado-hd:#1E4008;
+  --c-publicado-hd:#2E2670;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
@@ -49,8 +55,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .board-wrap{overflow-x:auto;padding-bottom:8px}
 .board{display:flex;gap:12px;align-items:flex-start;padding-bottom:4px;width:100%}
 .column{flex:1 1 0;min-width:160px;display:flex;flex-direction:column;gap:6px}
-.col-header{padding:8px 12px;border-radius:var(--radius-sm);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
-.col-count{font-size:11px;font-weight:500;padding:1px 7px;border-radius:99px;opacity:.75}
+.col-header{padding:11px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;color:#fff}
+.col-count{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.22);color:#fff}
 .col-body{border:1px solid var(--border);border-radius:var(--radius);padding:8px;min-height:calc(100vh - 140px);transition:background .12s,border-color .12s}
 .col-body.drag-over{background:rgba(0,0,0,.03);border-color:var(--text-3);border-style:dashed}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;cursor:pointer;margin-bottom:6px;box-shadow:var(--shadow);transition:border-color .12s,box-shadow .12s}
@@ -210,7 +216,17 @@ tbody tr:hover td{background:#FAFAF8}
     <div class="divider"></div>
 
     <div class="field"><label>Professor responsável</label><input id="f-prof" placeholder="Nome do professor"/></div>
+    <div class="field">
+      <label>Tipo de caso</label>
+      <select id="f-tipo">
+        <option value="">— Selecionar —</option>
+        <option value="Oral Online">Oral Online</option>
+        <option value="Criar">Criar</option>
+        <option value="Simulação">Simulação</option>
+      </select>
+    </div>
     <div class="field"><label>Tema</label><input id="f-tema" placeholder="Ex: Cardiologia, Pediatria..."/></div>
+    <div class="field"><label>Ano</label><input id="f-ano" placeholder="Ex: 2025" style="font-family:'DM Mono',monospace"/></div>
     <div class="field"><label>ID do caso</label><input id="f-id" placeholder="Ex: CC-2024-001" style="font-family:'DM Mono',monospace"/></div>
 
     <div class="divider"></div>
@@ -326,11 +342,11 @@ const firebaseConfig = {
 };
 
 const COLS = [
-  {id:'remember', label:'Remember',   bg:'var(--c-remember-bg)', tx:'var(--c-remember-tx)', ac:'var(--c-remember-ac)'},
-  {id:'producao', label:'Em produção',bg:'var(--c-producao-bg)', tx:'var(--c-producao-tx)', ac:'var(--c-producao-ac)'},
-  {id:'peer',     label:'Peer-review',bg:'var(--c-peer-bg)',     tx:'var(--c-peer-tx)',     ac:'var(--c-peer-ac)'},
-  {id:'revisado', label:'Revisado',   bg:'var(--c-revisado-bg)', tx:'var(--c-revisado-tx)', ac:'var(--c-revisado-ac)'},
-  {id:'publicado',label:'Publicado',  bg:'var(--c-publicado-bg)',tx:'var(--c-publicado-tx)',ac:'var(--c-publicado-ac)'},
+  {id:'remember', label:'Remember',   bg:'var(--c-remember-bg)', tx:'var(--c-remember-tx)', ac:'var(--c-remember-ac)', hd:'var(--c-remember-hd)'},
+  {id:'producao', label:'Em produção',bg:'var(--c-producao-bg)', tx:'var(--c-producao-tx)', ac:'var(--c-producao-ac)', hd:'var(--c-producao-hd)'},
+  {id:'peer',     label:'Peer-review',bg:'var(--c-peer-bg)',     tx:'var(--c-peer-tx)',     ac:'var(--c-peer-ac)',     hd:'var(--c-peer-hd)'},
+  {id:'revisado', label:'Revisado',   bg:'var(--c-revisado-bg)', tx:'var(--c-revisado-tx)', ac:'var(--c-revisado-ac)', hd:'var(--c-revisado-hd)'},
+  {id:'publicado',label:'Publicado',  bg:'var(--c-publicado-bg)',tx:'var(--c-publicado-tx)',ac:'var(--c-publicado-ac)', hd:'var(--c-publicado-hd)'},
 ];
 const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
@@ -401,8 +417,8 @@ function render(){
 
     const hdr = document.createElement('div');
     hdr.className = 'col-header';
-    hdr.style.cssText = `background:${col.bg};color:${col.tx}`;
-    hdr.innerHTML = `<span>${col.label}</span><span class="col-count" style="background:${col.ac}22">${cc.length}</span>`;
+    hdr.style.cssText = `background:${col.hd}`;
+    hdr.innerHTML = `<span>${col.label}</span><span class="col-count">${cc.length}</span>`;
     colEl.appendChild(hdr);
 
     const body = document.createElement('div');
@@ -439,7 +455,8 @@ function render(){
           </div>
         </div>
         ${card.tema?`<span class="card-pill" style="background:${col.bg};color:${col.tx}">${esc(card.tema)}</span>`:''}
-        ${card.prof?`<div class="card-sub">👤 ${esc(card.prof)}</div>`:''}
+        ${card.tipo?`<span class="card-pill" style="background:var(--bg);color:var(--text-2);border:1px solid var(--border)">${esc(card.tipo)}</span>`:''}
+        ${card.prof?`<div class="card-sub">👤 ${esc(card.prof)}${card.ano?' · '+esc(card.ano):''}</div>`:''}
         ${card.enunciado?`<div class="card-preview">${esc(card.enunciado)}</div>`:''}
         ${isRemember?`<div class="card-claim-hint">Clique para assumir →</div>`:''}`;
 
@@ -495,6 +512,8 @@ window.openView = function(uid) {
   const datePeer   = card.peerDate  ? new Date(card.peerDate).toLocaleDateString('pt-BR')  : '';
   let metaParts = [];
   if (card.prof) metaParts.push(`👤 ${esc(card.prof)}`);
+  if (card.tipo) metaParts.push(`📋 ${esc(card.tipo)}`);
+  if (card.ano)  metaParts.push(`📅 ${esc(card.ano)}`);
   if (dateCriado) metaParts.push(`Criado em ${dateCriado}`);
   if (datePeer)   metaParts.push(`Peer-review em ${datePeer}`);
   document.getElementById('view-header-meta').innerHTML = `
@@ -669,7 +688,7 @@ window.delImg = function(field,idx){
 
 window.openNew = function(colId){
   editingId=null;clearImgs();
-  ['prof','tema','id','enunciado','p1','p2','p3','obs'].forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.value='';});
+  ['prof','tipo','tema','ano','id','enunciado','p1','p2','p3','obs'].forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.value='';});
   document.getElementById('f-col').value=colId;
   document.getElementById('modal-title').textContent='Novo caso';
   document.getElementById('btn-delete').style.display='none';
@@ -682,7 +701,9 @@ window.openEdit = function(uid){
   editingId=uid; clearImgs();
   ['enunciado','p1','p2','p3'].forEach(k=>{tmpImgs[k]=[...(card.imgs&&card.imgs[k]?card.imgs[k]:[])];tmpImgs[k].forEach((s,i)=>renderThumb(k,i,s));});
   document.getElementById('f-prof').value=card.prof||'';
+  document.getElementById('f-tipo').value=card.tipo||'';
   document.getElementById('f-tema').value=card.tema||'';
+  document.getElementById('f-ano').value=card.ano||'';
   document.getElementById('f-id').value=card.id||'';
   document.getElementById('f-enunciado').value=card.enunciado||'';
   document.getElementById('f-p1').value=card.p1||'';
@@ -706,7 +727,9 @@ window.saveCard = function(){
   const newCard = {
     _uid:uid, col:newCol,
     prof:document.getElementById('f-prof').value.trim(),
+    tipo:document.getElementById('f-tipo').value.trim(),
     tema:document.getElementById('f-tema').value.trim(),
+    ano:document.getElementById('f-ano').value.trim(),
     id:document.getElementById('f-id').value.trim(),
     enunciado:document.getElementById('f-enunciado').value.trim(),
     p1:document.getElementById('f-p1').value.trim(),
