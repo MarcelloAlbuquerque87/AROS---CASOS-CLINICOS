@@ -115,8 +115,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .view-meta-txt{font-size:11px;color:var(--text-3)}
 .assume-bar{background:var(--c-producao-bg);border:1px solid rgba(24,95,165,.18);border-radius:var(--radius-sm);padding:12px 14px;display:flex;gap:8px;align-items:center;margin-bottom:18px}
 .assume-bar p{font-size:12px;color:var(--c-producao-tx);font-weight:500;white-space:nowrap;margin-right:4px}
-.assume-bar input{flex:1;padding:7px 10px;border:1px solid rgba(24,95,165,.25);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;min-width:0}
-.assume-bar input:focus{border-color:var(--c-producao-ac)}
+.assume-bar select{flex:1;padding:7px 10px;border:1px solid rgba(24,95,165,.25);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;min-width:0;cursor:pointer}
+.assume-bar select:focus{border-color:var(--c-producao-ac)}
 .btn-assume{padding:7px 16px;background:var(--c-producao-ac);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity .12s}
 .btn-assume:hover{opacity:.88}
 .view-body{max-height:55vh;overflow-y:auto;padding-right:2px}
@@ -215,7 +215,6 @@ tbody tr:hover td{background:#FAFAF8}
 
     <div class="divider"></div>
 
-    <div class="field"><label>Professor responsável</label><input id="f-prof" placeholder="Nome do professor"/></div>
     <div class="field">
       <label>Tipo de caso</label>
       <select id="f-tipo">
@@ -304,7 +303,16 @@ tbody tr:hover td{background:#FAFAF8}
     <!-- Assume bar: shown only for Remember cards -->
     <div class="assume-bar" id="view-assume-bar" style="display:none">
       <p>Assumir caso:</p>
-      <input id="view-assume-name" placeholder="Seu nome..." onkeydown="if(event.key==='Enter')assumeCard()"/>
+      <select id="view-assume-name">
+        <option value="">— Selecionar professor —</option>
+        <option value="Davi Brasil">Davi Brasil</option>
+        <option value="Larissa Martins">Larissa Martins</option>
+        <option value="Laura Tassis">Laura Tassis</option>
+        <option value="Luis Eduardo">Luis Eduardo</option>
+        <option value="Mauricio Machado">Mauricio Machado</option>
+        <option value="Iara Araújo">Iara Araújo</option>
+        <option value="Felipe Medeiros">Felipe Medeiros</option>
+      </select>
       <button class="btn-assume" onclick="assumeCard()">Assumir →</button>
     </div>
 
@@ -454,7 +462,7 @@ function render(){
             </button>
           </div>
         </div>
-        ${card.tema?`<span class="card-pill" style="background:${col.bg};color:${col.tx}">${esc(card.tema)}</span>`:''}
+        ${card.id && card.tema ? `<span class="card-pill" style="background:${col.bg};color:${col.tx}">${esc(card.tema)}</span>` : ''}
         ${card.tipo?`<span class="card-pill" style="background:var(--bg);color:var(--text-2);border:1px solid var(--border)">${esc(card.tipo)}</span>`:''}
         ${card.prof?`<div class="card-sub">👤 ${esc(card.prof)}${card.ano?' · '+esc(card.ano):''}</div>`:''}
         ${card.enunciado?`<div class="card-preview">${esc(card.enunciado)}</div>`:''}
@@ -503,8 +511,8 @@ window.openView = function(uid) {
 
   const col = COLS.find(c => c.id === card.col) || COLS[0];
 
-  // Header
-  document.getElementById('view-case-id').textContent = card.id || '';
+  // Header — ID só aparece se for diferente do tema (evita duplicação)
+  document.getElementById('view-case-id').textContent = (card.id && card.id !== card.tema) ? card.id : '';
   document.getElementById('view-title').textContent = card.tema || card.id || '(sem título)';
 
   // Meta bar
@@ -602,9 +610,7 @@ window.releaseCard = function() {
     .then(() => closeView());
 };
 
-document.getElementById('view-overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('view-overlay')) closeView();
-});
+// O modal de visualização fecha apenas pelo botão X
 
 // LIGHTBOX
 window.openLightbox = function(src) {
@@ -688,19 +694,18 @@ window.delImg = function(field,idx){
 
 window.openNew = function(colId){
   editingId=null;clearImgs();
-  ['prof','tipo','tema','ano','id','enunciado','p1','p2','p3','obs'].forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.value='';});
+  ['tipo','tema','ano','id','enunciado','p1','p2','p3','obs'].forEach(k=>{const el=document.getElementById('f-'+k);if(el)el.value='';});
   document.getElementById('f-col').value=colId;
   document.getElementById('modal-title').textContent='Novo caso';
   document.getElementById('btn-delete').style.display='none';
   document.getElementById('overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('f-prof').focus(),60);
+  setTimeout(()=>document.getElementById('f-tema').focus(),60);
 };
 
 window.openEdit = function(uid){
   const card=cards[uid]; if(!card)return;
   editingId=uid; clearImgs();
   ['enunciado','p1','p2','p3'].forEach(k=>{tmpImgs[k]=[...(card.imgs&&card.imgs[k]?card.imgs[k]:[])];tmpImgs[k].forEach((s,i)=>renderThumb(k,i,s));});
-  document.getElementById('f-prof').value=card.prof||'';
   document.getElementById('f-tipo').value=card.tipo||'';
   document.getElementById('f-tema').value=card.tema||'';
   document.getElementById('f-ano').value=card.ano||'';
@@ -726,7 +731,7 @@ window.saveCard = function(){
   const newCol = document.getElementById('f-col').value;
   const newCard = {
     _uid:uid, col:newCol,
-    prof:document.getElementById('f-prof').value.trim(),
+    prof: existing ? (existing.prof || '') : '',
     tipo:document.getElementById('f-tipo').value.trim(),
     tema:document.getElementById('f-tema').value.trim(),
     ano:document.getElementById('f-ano').value.trim(),
