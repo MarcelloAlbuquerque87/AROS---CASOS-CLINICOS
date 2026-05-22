@@ -48,31 +48,61 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .status-dot.err{background:#e53e3e}
 
 /* PANES */
-.pane{display:none;padding:20px 24px}
+.pane{display:none}
 .pane.active{display:block}
 
+/* QUICK BAR */
+.quick-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;gap:0;align-items:flex-start}
+.qb-section{flex:1;min-width:0}
+.qb-section-head{display:flex;align-items:center;gap:6px;margin-bottom:10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-3)}
+.qb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.qb-dot-available{background:var(--c-remember-hd)}
+.qb-dot-inprod{background:var(--c-producao-hd)}
+.qb-count{background:var(--border);border-radius:99px;padding:1px 7px;font-size:10px;color:var(--text-2)}
+.qb-scroll{display:flex;gap:6px;flex-wrap:wrap}
+.qb-chip{background:var(--c-remember-bg);border:1px solid rgba(58,56,48,.15);border-radius:var(--radius-sm);padding:5px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--c-remember-tx);transition:all .12s;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qb-chip:hover{border-color:var(--c-remember-hd);filter:brightness(.96)}
+.qb-inprod-card{display:flex;align-items:center;gap:7px;background:var(--c-producao-bg);border:1px solid rgba(10,58,106,.12);border-radius:var(--radius-sm);padding:6px 10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;max-width:210px}
+.qb-inprod-card:hover{border-color:var(--c-producao-hd);filter:brightness(.97)}
+.qb-inprod-info{display:flex;flex-direction:column;gap:1px;min-width:0}
+.qb-inprod-prof{font-size:10px;font-weight:600;color:var(--c-producao-tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qb-inprod-tema{font-size:11px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qb-divider{width:1px;background:var(--border);margin:0 20px;flex-shrink:0;align-self:stretch;min-height:40px}
+.qb-empty{font-size:11px;color:var(--text-3);font-style:italic;padding:5px 2px}
+
 /* BOARD */
-.board-wrap{overflow-x:auto;padding-bottom:8px}
+.board-wrap{overflow-x:auto;padding:20px 24px 8px}
 .board{display:flex;gap:12px;align-items:flex-start;padding-bottom:4px;width:100%}
 .column{flex:1 1 0;min-width:160px;display:flex;flex-direction:column;gap:6px}
 .col-header{padding:11px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;color:#fff}
 .col-count{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.22);color:#fff}
-.col-body{border:1px solid var(--border);border-radius:var(--radius);padding:8px;min-height:calc(100vh - 140px);transition:background .12s,border-color .12s}
+.col-body{border:1px solid var(--border);border-radius:var(--radius);padding:8px;min-height:calc(100vh - 200px);transition:background .12s,border-color .12s}
 .col-body.drag-over{background:rgba(0,0,0,.03);border-color:var(--text-3);border-style:dashed}
+
+/* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 11px;cursor:pointer;margin-bottom:6px;box-shadow:var(--shadow);transition:border-color .12s,box-shadow .12s}
 .card:last-of-type{margin-bottom:0}
 .card:hover{border-color:var(--text-3);box-shadow:var(--shadow-md)}
 .card[draggable]:active{cursor:grabbing}
 .card.dragging{opacity:.3;transform:rotate(1deg)}
-.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:5px}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:2px}
+.card-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.35;flex:1;word-break:break-word}
+.card-id-mono{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-3);margin-bottom:5px}
 .card-id{font-family:'DM Mono',monospace;font-size:11.5px;font-weight:500;color:var(--text);line-height:1.3;flex:1;word-break:break-all}
 .card-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
 .card-edit{background:none;border:none;cursor:pointer;color:var(--text-3);padding:0;line-height:1;transition:color .12s}
 .card-edit:hover{color:var(--text)}
 .card-pill{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:99px;margin-bottom:4px}
 .card-sub{font-size:11px;color:var(--text-2);margin-bottom:2px}
-.card-preview{font-size:11px;color:var(--text-3);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.card-claim-hint{font-size:10px;color:var(--c-producao-ac);margin-top:5px;font-weight:500;opacity:.8}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:6px;flex-wrap:wrap;min-height:22px}
+.card-tipo{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:99px}
+.tipo-oral-online{background:#E8F0FA;color:#0C447C}
+.tipo-criar{background:#EBF5E0;color:#27500A}
+.tipo-simulação,.tipo-simulacao{background:#FAF0E0;color:#633806}
+.card-claim-hint{font-size:10px;color:var(--c-producao-ac);font-weight:500;opacity:.85}
+.prof-avatar{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;font-family:'DM Mono',monospace;letter-spacing:-.5px}
+.prof-avatar-sm{width:26px;height:26px;font-size:10px}
+
 .add-btn{width:100%;padding:8px;border-radius:var(--radius-sm);border:1px dashed var(--border);background:transparent;color:var(--text-3);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .12s;margin-top:6px}
 .add-btn:hover{border-color:var(--text-3);color:var(--text-2);background:rgba(0,0,0,.02)}
 
@@ -163,6 +193,7 @@ tbody tr:hover td{background:#FAFAF8}
 .pill-id{display:inline-block;font-size:10px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:99px;background:#E8F0FA;color:#0C447C;margin:1px}
 .empty{text-align:center;padding:56px 0;color:var(--text-3);font-size:13px;line-height:1.7}
 .loading{text-align:center;padding:40px;color:var(--text-3);font-size:13px}
+.pane-inner{padding:20px 24px}
 </style>
 </head>
 <body>
@@ -179,6 +210,8 @@ tbody tr:hover td{background:#FAFAF8}
 
 <!-- KANBAN -->
 <div class="pane active" id="pane-kanban">
+  <!-- QUICK BAR: visão rápida dos casos disponíveis e em produção -->
+  <div id="quick-bar" class="quick-bar" style="display:none"></div>
   <div class="board-wrap">
     <div class="board" id="board">
       <div class="loading">Carregando casos...</div>
@@ -188,16 +221,18 @@ tbody tr:hover td{background:#FAFAF8}
 
 <!-- PRODUÇÃO -->
 <div class="pane" id="pane-producao">
-  <div class="prod-top">
-    <h2>Produção por professor</h2>
-    <div class="year-nav">
-      <button onclick="changeYear(-1)">←</button>
-      <span id="year-lbl"></span>
-      <button onclick="changeYear(1)">→</button>
+  <div class="pane-inner">
+    <div class="prod-top">
+      <h2>Produção por professor</h2>
+      <div class="year-nav">
+        <button onclick="changeYear(-1)">←</button>
+        <span id="year-lbl"></span>
+        <button onclick="changeYear(1)">→</button>
+      </div>
     </div>
+    <div class="metrics" id="metrics"></div>
+    <div class="table-wrap" id="prod-table"></div>
   </div>
-  <div class="metrics" id="metrics"></div>
-  <div class="table-wrap" id="prod-table"></div>
 </div>
 
 <!-- EDIT MODAL -->
@@ -358,6 +393,24 @@ const COLS = [
 ];
 const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
+// Avatares fixos por professor
+const PROF_AVATARS = {
+  'Davi Brasil':      {init:'DB', bg:'#0A3A6A'},
+  'Larissa Martins':  {init:'LM', bg:'#27500A'},
+  'Laura Tassis':     {init:'LT', bg:'#633806'},
+  'Luis Eduardo':     {init:'LE', bg:'#3C3489'},
+  'Mauricio Machado': {init:'MM', bg:'#4A4840'},
+  'Iara Araújo':      {init:'IA', bg:'#7A4A08'},
+  'Felipe Medeiros':  {init:'FM', bg:'#1E4008'},
+};
+
+function getAvatar(name, extra) {
+  const av = PROF_AVATARS[name];
+  const bg = av ? av.bg : '#6B6860';
+  const init = av ? av.init : (name ? name.trim().split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase() : '?');
+  return `<span class="prof-avatar${extra ? ' '+extra : ''}" style="background:${bg}">${init}</span>`;
+}
+
 let cards = {};
 let editingId = null;
 let viewingId = null;
@@ -384,6 +437,7 @@ try {
   onValue(dbRef, snap => {
     cards = snap.val() || {};
     render();
+    renderQuickBar();
     renderProd();
     // Refresh view modal if open so it reflects latest data
     if (viewingId && document.getElementById('view-overlay').classList.contains('open')) {
@@ -407,6 +461,51 @@ window.switchTab = function(name, btn) {
   if(name==='producao'){document.getElementById('year-lbl').textContent=prodYear;renderProd();}
 };
 window.changeYear = function(d){prodYear+=d;document.getElementById('year-lbl').textContent=prodYear;renderProd();};
+
+// QUICK BAR: visão rápida de casos disponíveis e em produção
+function renderQuickBar() {
+  const bar = document.getElementById('quick-bar');
+  const arr = Object.values(cards);
+  const available = arr.filter(c => c.col === 'remember');
+  const inProd    = arr.filter(c => c.col === 'producao');
+
+  const availHTML = available.length
+    ? available.map(c =>
+        `<button class="qb-chip" onclick="openView('${c._uid}')">${esc(c.tema || c.id || '(sem tema)')}</button>`
+      ).join('')
+    : '<span class="qb-empty">Nenhum caso disponível</span>';
+
+  const inProdHTML = inProd.length
+    ? inProd.map(c => `
+        <button class="qb-inprod-card" onclick="openView('${c._uid}')">
+          ${getAvatar(c.prof || '', 'prof-avatar-sm')}
+          <div class="qb-inprod-info">
+            <span class="qb-inprod-prof">${esc(c.prof || 'Sem professor')}</span>
+            <span class="qb-inprod-tema">${esc(c.tema || c.id || '(sem tema)')}</span>
+          </div>
+        </button>`).join('')
+    : '<span class="qb-empty">Nenhum caso em produção</span>';
+
+  bar.innerHTML = `
+    <div class="qb-section">
+      <div class="qb-section-head">
+        <span class="qb-dot qb-dot-available"></span>
+        Disponíveis
+        <span class="qb-count">${available.length}</span>
+      </div>
+      <div class="qb-scroll">${availHTML}</div>
+    </div>
+    <div class="qb-divider"></div>
+    <div class="qb-section">
+      <div class="qb-section-head">
+        <span class="qb-dot qb-dot-inprod"></span>
+        Em produção
+        <span class="qb-count">${inProd.length}</span>
+      </div>
+      <div class="qb-scroll">${inProdHTML}</div>
+    </div>`;
+  bar.style.display = 'flex';
+}
 
 // RENDER KANBAN
 function render(){
@@ -450,23 +549,25 @@ function render(){
       const el = document.createElement('div');
       el.className = 'card';
       el.draggable = true;
-      const title = card.id || card.tema || card.prof || '(sem título)';
       const isRemember = card.col === 'remember';
+      const tipoKey = card.tipo ? card.tipo.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'-') : '';
 
       el.innerHTML = `
         <div class="card-top">
-          <span class="card-id">${esc(title)}</span>
+          <span class="card-title">${esc(card.tema || card.id || '(sem título)')}</span>
           <div class="card-actions">
             <button class="card-edit" title="Editar" data-uid="${card._uid}">
               <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
             </button>
           </div>
         </div>
-        ${card.id && card.tema ? `<span class="card-pill" style="background:${col.bg};color:${col.tx}">${esc(card.tema)}</span>` : ''}
-        ${card.tipo?`<span class="card-pill" style="background:var(--bg);color:var(--text-2);border:1px solid var(--border)">${esc(card.tipo)}</span>`:''}
-        ${card.prof?`<div class="card-sub">👤 ${esc(card.prof)}${card.ano?' · '+esc(card.ano):''}</div>`:''}
-        ${card.enunciado?`<div class="card-preview">${esc(card.enunciado)}</div>`:''}
-        ${isRemember?`<div class="card-claim-hint">Clique para assumir →</div>`:''}`;
+        ${card.id && card.id !== card.tema ? `<div class="card-id-mono">${esc(card.id)}</div>` : ''}
+        <div class="card-footer">
+          ${card.tipo ? `<span class="card-tipo tipo-${tipoKey}">${esc(card.tipo)}</span>` : '<span></span>'}
+          ${card.prof
+            ? getAvatar(card.prof)
+            : (isRemember ? '<span class="card-claim-hint">Assumir →</span>' : '<span></span>')}
+        </div>`;
 
       el.addEventListener('dragstart', ()=>{dragging=card._uid;el.classList.add('dragging')});
       el.addEventListener('dragend', ()=>{dragging=null;el.classList.remove('dragging')});
@@ -519,14 +620,14 @@ window.openView = function(uid) {
   const dateCriado = card.createdAt ? new Date(card.createdAt).toLocaleDateString('pt-BR') : '';
   const datePeer   = card.peerDate  ? new Date(card.peerDate).toLocaleDateString('pt-BR')  : '';
   let metaParts = [];
-  if (card.prof) metaParts.push(`👤 ${esc(card.prof)}`);
+  if (card.prof) metaParts.push(`${getAvatar(card.prof)} ${esc(card.prof)}`);
   if (card.tipo) metaParts.push(`📋 ${esc(card.tipo)}`);
   if (card.ano)  metaParts.push(`📅 ${esc(card.ano)}`);
   if (dateCriado) metaParts.push(`Criado em ${dateCriado}`);
   if (datePeer)   metaParts.push(`Peer-review em ${datePeer}`);
   document.getElementById('view-header-meta').innerHTML = `
     <span class="view-status-pill" style="background:${col.bg};color:${col.tx}">${col.label}</span>
-    ${metaParts.length ? `<span class="view-meta-txt">${metaParts.join(' · ')}</span>` : ''}`;
+    ${metaParts.length ? `<span class="view-meta-txt" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${metaParts.join('<span style="color:var(--border)">·</span>')}</span>` : ''}`;
 
   // Assume bar (only for Remember)
   const assumeBar = document.getElementById('view-assume-bar');
@@ -621,7 +722,7 @@ window.closeLightbox = function() {
   document.getElementById('lightbox').classList.remove('open');
 };
 document.getElementById('lightbox').addEventListener('click', e => {
-  if (e.target !== document.getElementById('lightbox-close')) closeLightbox();
+  if (!e.target.closest('.lightbox-close')) closeLightbox();
 });
 
 // RENDER PRODUÇÃO
@@ -748,8 +849,11 @@ window.saveCard = function(){
   if(newCol==='peer' && (!existing||existing.col!=='peer') && !newCard.peerDate){
     newCard.peerDate=new Date().toISOString();
   }
-  set(ref(db,'casos/'+uid), newCard)
-    .then(()=>{closeModal();btn.disabled=false;})
+  // update() para edições (preserva campos não mapeados); set() para cards novos
+  const op = editingId
+    ? update(ref(db,'casos/'+uid), newCard)
+    : set(ref(db,'casos/'+uid), newCard);
+  op.then(()=>{closeModal();btn.disabled=false;})
     .catch(e=>{alert('Erro ao salvar: '+e.message);btn.disabled=false;});
 };
 
