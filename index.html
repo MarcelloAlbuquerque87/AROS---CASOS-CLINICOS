@@ -35,6 +35,20 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 
+/* LOGIN SCREEN */
+.login-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-screen.hidden{display:none}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-md);padding:40px 48px;width:100%;max-width:400px;text-align:center}
+.login-logo{font-size:22px;font-weight:600;letter-spacing:-.03em;margin-bottom:6px}
+.login-logo span{color:var(--text-2);font-weight:400}
+.login-sub{font-size:13px;color:var(--text-3);margin-bottom:32px;line-height:1.55}
+.btn-google{display:inline-flex;align-items:center;gap:10px;padding:11px 24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:500;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;box-shadow:var(--shadow);width:100%;justify-content:center}
+.btn-google:hover{border-color:var(--text-3);box-shadow:var(--shadow-md)}
+.btn-google:disabled{opacity:.5;cursor:not-allowed}
+.btn-google svg{flex-shrink:0}
+.login-error{margin-top:14px;font-size:12px;color:#c0392b;display:none}
+.login-error.show{display:block}
+
 /* NAV */
 nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:0;height:52px;position:sticky;top:0;z-index:40}
 .nav-brand{font-weight:600;font-size:15px;margin-right:28px;letter-spacing:-.02em}
@@ -42,10 +56,16 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .tab-btn{height:52px;padding:0 16px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-2);margin-bottom:-1px;transition:color .15s,border-color .15s}
 .tab-btn:hover{color:var(--text)}
 .tab-btn.active{color:var(--text);border-bottom-color:var(--text)}
-.nav-status{margin-left:auto;font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.nav-status{font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:6px}
 .status-dot{width:7px;height:7px;border-radius:50%;background:#ccc;transition:background .3s}
 .status-dot.ok{background:#4CAF50}
 .status-dot.err{background:#e53e3e}
+.nav-user{display:flex;align-items:center;gap:8px}
+.nav-user-photo{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+.nav-user-name{font-size:12px;font-weight:500;color:var(--text-2)}
+.nav-signout{background:none;border:none;cursor:pointer;font-size:12px;color:var(--text-3);font-family:'DM Sans',sans-serif;padding:0;transition:color .12s}
+.nav-signout:hover{color:var(--text)}
 
 /* PANES */
 .pane{display:none}
@@ -198,19 +218,44 @@ tbody tr:hover td{background:#FAFAF8}
 </head>
 <body>
 
+<!-- TELA DE LOGIN (visível enquanto não autenticado) -->
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Casos <span>Clínicos</span></div>
+    <p class="login-sub">Plataforma de gestão de casos clínicos AROS.<br>Faça login com sua conta Google para continuar.</p>
+    <button class="btn-google" id="btn-google-login" onclick="signInWithGoogle()">
+      <!-- Google G logo -->
+      <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/>
+        <path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      Entrar com Google
+    </button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
 <nav>
   <div class="nav-brand">Casos <span>Clínicos</span></div>
   <button class="tab-btn active" onclick="switchTab('kanban',this)">Kanban</button>
   <button class="tab-btn" onclick="switchTab('producao',this)">Produção</button>
-  <div class="nav-status">
-    <div class="status-dot" id="status-dot"></div>
-    <span id="status-txt">Conectando...</span>
+  <div class="nav-right">
+    <div class="nav-status">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-txt">Conectando...</span>
+    </div>
+    <div class="nav-user" id="nav-user" style="display:none">
+      <img class="nav-user-photo" id="nav-user-photo" src="" alt=""/>
+      <span class="nav-user-name" id="nav-user-name"></span>
+      <button class="nav-signout" onclick="doSignOut()">Sair</button>
+    </div>
   </div>
 </nav>
 
 <!-- KANBAN -->
 <div class="pane active" id="pane-kanban">
-  <!-- QUICK BAR: visão rápida dos casos disponíveis e em produção -->
   <div id="quick-bar" class="quick-bar" style="display:none"></div>
   <div class="board-wrap">
     <div class="board" id="board">
@@ -373,6 +418,8 @@ tbody tr:hover td{background:#FAFAF8}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue, set, remove, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB5PEhvKWn6nv_WHJD48ciyVwzcQA0ACW0",
@@ -384,6 +431,76 @@ const firebaseConfig = {
   appId: "1:708068865286:web:9027da2f28a3454c599a87"
 };
 
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+let db, dbRef, dbUnsubscribe;
+
+// ─── AUTENTICAÇÃO ────────────────────────────────────────────────────────────
+
+window.signInWithGoogle = function() {
+  const btn = document.getElementById('btn-google-login');
+  const errEl = document.getElementById('login-error');
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+  errEl.classList.remove('show');
+  signInWithPopup(auth, provider).catch(err => {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" fill="#34A853"/><path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg> Entrar com Google`;
+    if (err.code !== 'auth/popup-closed-by-user') {
+      errEl.textContent = 'Erro ao entrar. Tente novamente.';
+      errEl.classList.add('show');
+    }
+  });
+};
+
+window.doSignOut = function() {
+  if (dbUnsubscribe) { dbUnsubscribe(); dbUnsubscribe = null; }
+  signOut(auth);
+};
+
+onAuthStateChanged(auth, user => {
+  const loginScreen = document.getElementById('login-screen');
+  const navUser = document.getElementById('nav-user');
+
+  if (user) {
+    // Usuário autenticado — esconde login, mostra app
+    loginScreen.classList.add('hidden');
+    navUser.style.display = 'flex';
+    document.getElementById('nav-user-photo').src = user.photoURL || '';
+    document.getElementById('nav-user-name').textContent = user.displayName
+      ? user.displayName.split(' ')[0] : user.email;
+
+    // Conecta ao banco
+    db = getDatabase(app);
+    dbRef = ref(db, 'casos');
+    setStatus(true, 'Conectado');
+
+    dbUnsubscribe = onValue(dbRef, snap => {
+      cards = snap.val() || {};
+      render();
+      renderQuickBar();
+      renderProd();
+      if (viewingId && document.getElementById('view-overlay').classList.contains('open')) {
+        openView(viewingId);
+      }
+    }, err => {
+      setStatus(false, 'Erro de conexão');
+      console.error(err);
+    });
+
+  } else {
+    // Não autenticado — mostra login, esconde user info
+    loginScreen.classList.remove('hidden');
+    navUser.style.display = 'none';
+    cards = {};
+    if (dbUnsubscribe) { dbUnsubscribe(); dbUnsubscribe = null; }
+    setStatus(false, 'Desconectado');
+  }
+});
+
+// ─── APP ─────────────────────────────────────────────────────────────────────
+
 const COLS = [
   {id:'remember', label:'Remember',   bg:'var(--c-remember-bg)', tx:'var(--c-remember-tx)', ac:'var(--c-remember-ac)', hd:'var(--c-remember-hd)'},
   {id:'producao', label:'Em produção',bg:'var(--c-producao-bg)', tx:'var(--c-producao-tx)', ac:'var(--c-producao-ac)', hd:'var(--c-producao-hd)'},
@@ -393,7 +510,6 @@ const COLS = [
 ];
 const MONTHS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
-// Avatares fixos por professor
 const PROF_AVATARS = {
   'Davi Brasil':      {init:'DB', bg:'#0A3A6A'},
   'Larissa Martins':  {init:'LM', bg:'#27500A'},
@@ -417,7 +533,6 @@ let viewingId = null;
 let dragging = null;
 let tmpImgs = {enunciado:[],p1:[],p2:[],p3:[]};
 let prodYear = new Date().getFullYear();
-let db, dbRef;
 
 function setStatus(ok, txt){
   document.getElementById('status-dot').className = 'status-dot ' + (ok ? 'ok' : 'err');
@@ -426,30 +541,6 @@ function setStatus(ok, txt){
 
 function esc(str){
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-try {
-  const app = initializeApp(firebaseConfig);
-  db = getDatabase(app);
-  dbRef = ref(db, 'casos');
-  setStatus(true, 'Conectado');
-
-  onValue(dbRef, snap => {
-    cards = snap.val() || {};
-    render();
-    renderQuickBar();
-    renderProd();
-    // Refresh view modal if open so it reflects latest data
-    if (viewingId && document.getElementById('view-overlay').classList.contains('open')) {
-      openView(viewingId);
-    }
-  }, err => {
-    setStatus(false, 'Erro de conexão');
-    console.error(err);
-  });
-} catch(e) {
-  setStatus(false, 'Firebase não configurado');
-  document.getElementById('board').innerHTML = `<div class="loading" style="color:#c0392b">⚠️ Configure o Firebase no arquivo index.html.</div>`;
 }
 
 // TABS
@@ -462,7 +553,7 @@ window.switchTab = function(name, btn) {
 };
 window.changeYear = function(d){prodYear+=d;document.getElementById('year-lbl').textContent=prodYear;renderProd();};
 
-// QUICK BAR: visão rápida de casos disponíveis e em produção
+// QUICK BAR
 function renderQuickBar() {
   const bar = document.getElementById('quick-bar');
   const arr = Object.values(cards);
@@ -571,12 +662,10 @@ function render(){
 
       el.addEventListener('dragstart', ()=>{dragging=card._uid;el.classList.add('dragging')});
       el.addEventListener('dragend', ()=>{dragging=null;el.classList.remove('dragging')});
-
       el.addEventListener('click', e => {
         if (e.target.closest('.card-edit')) return;
         openView(card._uid);
       });
-
       el.querySelector('.card-edit').addEventListener('click', e => {
         e.stopPropagation();
         openEdit(card._uid);
@@ -599,24 +688,18 @@ function render(){
 // VIEW MODAL
 function buildViewImgs(imgs) {
   if (!imgs || !imgs.length) return '';
-  const thumbs = imgs.map(src =>
-    `<div class="view-img"><img src="${src}" loading="lazy"/></div>`
-  ).join('');
-  return `<div class="view-imgs">${thumbs}</div>`;
+  return `<div class="view-imgs">${imgs.map(src=>`<div class="view-img"><img src="${src}" loading="lazy"/></div>`).join('')}</div>`;
 }
 
 window.openView = function(uid) {
   const card = cards[uid];
   if (!card) return;
   viewingId = uid;
-
   const col = COLS.find(c => c.id === card.col) || COLS[0];
 
-  // Header — ID só aparece se for diferente do tema (evita duplicação)
   document.getElementById('view-case-id').textContent = (card.id && card.id !== card.tema) ? card.id : '';
   document.getElementById('view-title').textContent = card.tema || card.id || '(sem título)';
 
-  // Meta bar
   const dateCriado = card.createdAt ? new Date(card.createdAt).toLocaleDateString('pt-BR') : '';
   const datePeer   = card.peerDate  ? new Date(card.peerDate).toLocaleDateString('pt-BR')  : '';
   let metaParts = [];
@@ -629,77 +712,39 @@ window.openView = function(uid) {
     <span class="view-status-pill" style="background:${col.bg};color:${col.tx}">${col.label}</span>
     ${metaParts.length ? `<span class="view-meta-txt" style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">${metaParts.join('<span style="color:var(--border)">·</span>')}</span>` : ''}`;
 
-  // Assume bar (only for Remember)
   const assumeBar = document.getElementById('view-assume-bar');
-  if (card.col === 'remember') {
-    assumeBar.style.display = 'flex';
-    document.getElementById('view-assume-name').value = '';
-  } else {
-    assumeBar.style.display = 'none';
-  }
+  assumeBar.style.display = card.col === 'remember' ? 'flex' : 'none';
+  if (card.col === 'remember') document.getElementById('view-assume-name').value = '';
 
-  // Release button (only for Em produção with a professor)
-  const releaseBtn = document.getElementById('view-btn-release');
-  releaseBtn.style.display = (card.col === 'producao' && card.prof) ? 'block' : 'none';
+  document.getElementById('view-btn-release').style.display =
+    (card.col === 'producao' && card.prof) ? 'block' : 'none';
 
-  // Body
   const body = document.getElementById('view-body');
   let html = '';
-
-  if (card.enunciado) {
-    html += `<div class="view-section">
-      <div class="view-section-title">Enunciado</div>
-      <div class="view-text">${esc(card.enunciado)}</div>
-      ${buildViewImgs(card.imgs?.enunciado)}
-    </div>`;
-  }
-
-  ['p1','p2','p3'].forEach((k, i) => {
-    if (card[k]) {
-      html += `<div class="view-section">
-        <div class="view-section-title">Pergunta ${i+1}</div>
-        <div class="view-text">${esc(card[k])}</div>
-        ${buildViewImgs(card.imgs?.[k])}
-      </div>`;
-    }
+  if (card.enunciado) html += `<div class="view-section"><div class="view-section-title">Enunciado</div><div class="view-text">${esc(card.enunciado)}</div>${buildViewImgs(card.imgs?.enunciado)}</div>`;
+  ['p1','p2','p3'].forEach((k,i) => {
+    if (card[k]) html += `<div class="view-section"><div class="view-section-title">Pergunta ${i+1}</div><div class="view-text">${esc(card[k])}</div>${buildViewImgs(card.imgs?.[k])}</div>`;
   });
-
-  if (card.obs) {
-    html += `<div class="view-section">
-      <div class="view-section-title">Observações</div>
-      <div class="view-text">${esc(card.obs)}</div>
-    </div>`;
-  }
-
+  if (card.obs) html += `<div class="view-section"><div class="view-section-title">Observações</div><div class="view-text">${esc(card.obs)}</div></div>`;
   if (!html) html = '<div class="view-empty">Nenhum conteúdo preenchido ainda.</div>';
   body.innerHTML = html;
 
-  // Lightbox delegation
   body.querySelectorAll('.view-img').forEach(thumb => {
     thumb.onclick = () => openLightbox(thumb.querySelector('img').src);
   });
 
   document.getElementById('view-overlay').classList.add('open');
-  if (card.col === 'remember') {
-    setTimeout(() => document.getElementById('view-assume-name').focus(), 60);
-  }
+  if (card.col === 'remember') setTimeout(() => document.getElementById('view-assume-name').focus(), 60);
 };
 
-window.closeView = function() {
-  document.getElementById('view-overlay').classList.remove('open');
-};
-
-window.openEditFromView = function() {
-  closeView();
-  openEdit(viewingId);
-};
+window.closeView = function() { document.getElementById('view-overlay').classList.remove('open'); };
+window.openEditFromView = function() { closeView(); openEdit(viewingId); };
 
 window.assumeCard = function() {
   const name = document.getElementById('view-assume-name').value.trim();
   if (!name) { document.getElementById('view-assume-name').focus(); return; }
   if (!viewingId) return;
-  update(ref(db, 'casos/' + viewingId), { prof: name, col: 'producao' })
-    .then(() => closeView());
+  update(ref(db, 'casos/' + viewingId), { prof: name, col: 'producao' }).then(() => closeView());
 };
 
 window.releaseCard = function() {
@@ -707,8 +752,7 @@ window.releaseCard = function() {
   const card = cards[viewingId];
   if (!card) return;
   if (!confirm(`Remover "${card.prof}" deste caso? O caso voltará para o quadro Remember.`)) return;
-  update(ref(db, 'casos/' + viewingId), { prof: '', col: 'remember' })
-    .then(() => closeView());
+  update(ref(db, 'casos/' + viewingId), { prof: '', col: 'remember' }).then(() => closeView());
 };
 
 // O modal de visualização fecha apenas pelo botão X
@@ -718,9 +762,7 @@ window.openLightbox = function(src) {
   document.getElementById('lightbox-img').src = src;
   document.getElementById('lightbox').classList.add('open');
 };
-window.closeLightbox = function() {
-  document.getElementById('lightbox').classList.remove('open');
-};
+window.closeLightbox = function() { document.getElementById('lightbox').classList.remove('open'); };
 document.getElementById('lightbox').addEventListener('click', e => {
   if (!e.target.closest('.lightbox-close')) closeLightbox();
 });
@@ -751,7 +793,6 @@ function renderProd(){
   let html = `<table><thead><tr><th>Professor</th>`;
   showIdx.forEach(i=>{html+=`<th>${MONTHS[i]}</th>`;});
   html += `<th>Total ${prodYear}</th></tr></thead><tbody>`;
-
   allProfs.forEach(p=>{
     const rowTotal = thisYear.filter(c=>c.prof===p).length;
     html += `<tr><td style="font-weight:500">${esc(p)}</td>`;
@@ -761,7 +802,6 @@ function renderProd(){
     });
     html += `<td style="font-weight:600;color:var(--c-producao-tx)">${rowTotal||'—'}</td></tr>`;
   });
-
   html += `<tr class="tfoot-row"><td>Total</td>`;
   showIdx.forEach(i=>{const n=thisYear.filter(c=>new Date(c.peerDate).getMonth()===i).length;html+=`<td>${n||'—'}</td>`;});
   html += `<td>${thisYear.length||'—'}</td></tr></tbody></table>`;
@@ -849,7 +889,6 @@ window.saveCard = function(){
   if(newCol==='peer' && (!existing||existing.col!=='peer') && !newCard.peerDate){
     newCard.peerDate=new Date().toISOString();
   }
-  // update() para edições (preserva campos não mapeados); set() para cards novos
   const op = editingId
     ? update(ref(db,'casos/'+uid), newCard)
     : set(ref(db,'casos/'+uid), newCard);
