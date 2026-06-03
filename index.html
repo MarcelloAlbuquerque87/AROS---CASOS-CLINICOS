@@ -933,7 +933,7 @@ window.deleteCard = function(){
   remove(ref(db,'casos/'+editingId)).then(()=>closeModal());
 };
 
-document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
+// Modais fecham apenas pelo botão X (não ao clicar fora)
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeView();closeLightbox();}});
 </script>
 </body>
