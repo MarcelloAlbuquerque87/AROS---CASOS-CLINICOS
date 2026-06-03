@@ -66,6 +66,8 @@ nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24
 .nav-user-name{font-size:12px;font-weight:500;color:var(--text-2)}
 .nav-signout{background:none;border:none;cursor:pointer;font-size:12px;color:var(--text-3);font-family:'DM Sans',sans-serif;padding:0;transition:color .12s}
 .nav-signout:hover{color:var(--text)}
+.btn-nav-new{padding:6px 14px;background:var(--text);color:#fff;border:none;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .12s;white-space:nowrap}
+.btn-nav-new:hover{opacity:.85}
 
 /* PANES */
 .pane{display:none}
@@ -241,6 +243,7 @@ tbody tr:hover td{background:#FAFAF8}
   <div class="nav-brand">Casos <span>Clínicos</span></div>
   <button class="tab-btn active" onclick="switchTab('kanban',this)">Kanban</button>
   <button class="tab-btn" onclick="switchTab('producao',this)">Produção</button>
+  <button class="btn-nav-new" onclick="openNew('remember')">+ Novo Caso</button>
   <div class="nav-right">
     <div class="nav-status">
       <div class="status-dot" id="status-dot"></div>
